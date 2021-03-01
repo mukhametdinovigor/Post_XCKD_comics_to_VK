@@ -1,7 +1,8 @@
-import requests
-import dotenv
 import os
 import random
+
+import dotenv
+import requests
 
 
 def get_random_comic_number(last_comic_url):
