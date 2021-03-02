@@ -29,13 +29,18 @@ def download_image(image_url, filename):
         file.write(response.content)
 
 
+def check_vk_response(response):
+    if response.json()['error']:
+        raise requests.HTTPError(f"error_code - {response.json()['error']['error_code']} {response.json()['error']['error_msg']}")
+
+
 def get_vk_upload_url(vk_url, method_name, vk_access_token, vk_api_version):
     payload = {
         'access_token': vk_access_token,
         'v': vk_api_version
     }
     response = requests.get(f'{vk_url}/{method_name}', payload)
-    response.raise_for_status()
+    check_vk_response(response)
     vk_upload_url = response.json()['response']['upload_url']
     return vk_upload_url
 
@@ -48,7 +53,7 @@ def get_vk_uploading_photo_parameters(upload_url, file):
         'photo': open(file, 'rb')
     }
     response_post = requests.post(upload_url, headers=headers, files=files)
-    response_post.raise_for_status()
+    check_vk_response(response_post)
     response_json = response_post.json()
     server, photo, photo_hash = response_json['server'], response_json['photo'], response_json['hash']
     return server, photo, photo_hash
@@ -64,7 +69,7 @@ def get_vk_saving_uploading_photo_parameters(
         'v': vk_api_version
     }
     response_post = requests.post(f'{vk_url}/{method_name}', payload)
-    response_post.raise_for_status()
+    check_vk_response(response_post)
     response_json = response_post.json()
     photo_owner_id = response_json['response'][0]['owner_id']
     photo_id = response_json['response'][0]['id']
@@ -81,7 +86,7 @@ def vk_wall_post(vk_url, method_name, owner_id, from_group, attachments, message
         'v': vk_api_version
     }
     response_post = requests.post(f'{vk_url}/{method_name}', payload)
-    response_post.raise_for_status()
+    check_vk_response(response_post)
     return f'Your post_id - {response_post.json()["response"]["post_id"]}'
 
 
