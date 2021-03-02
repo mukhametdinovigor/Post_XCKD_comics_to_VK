@@ -45,14 +45,15 @@ def get_vk_upload_url(vk_url, method_name, vk_access_token, vk_api_version):
     return vk_upload_url
 
 
-def get_vk_uploading_photo_parameters(upload_url, file):
+def get_vk_uploading_photo_parameters(upload_url, filename):
     headers = {
         'cache-control': 'no-cache',
     }
-    files = {
-        'photo': open(file, 'rb')
-    }
-    response = requests.post(upload_url, headers=headers, files=files)
+    with open(filename, 'rb') as file:
+        files = {
+            'photo': file
+        }
+        response = requests.post(upload_url, headers=headers, files=files)
     check_vk_response(response)
     photo_parameters = response.json()
     server, photo, photo_hash = photo_parameters['server'], photo_parameters['photo'], photo_parameters['hash']
@@ -76,7 +77,7 @@ def get_vk_saving_uploading_photo_parameters(
     return photo_owner_id, photo_id
 
 
-def vk_wall_post(vk_url, method_name, owner_id, from_group, attachments, message, vk_access_token, vk_api_version):
+def post_vk_wall(vk_url, method_name, owner_id, from_group, attachments, message, vk_access_token, vk_api_version):
     payload = {
         'owner_id': owner_id,
         'from_group': from_group,
@@ -111,7 +112,7 @@ def main():
         vk_url, save_method_name, server, photo, photo_hash, vk_access_token, vk_api_version)
     from_group = 1
     attachments = f'photo{photo_owner_id}_{photo_id}'
-    print(vk_wall_post(
+    print(post_vk_wall(
         vk_url, wall_posting_method_name, vk_group_id, from_group, attachments, comic_title, vk_access_token, vk_api_version))
     os.remove(comic_file_name)
 
