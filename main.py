@@ -54,8 +54,8 @@ def get_vk_uploading_photo_parameters(upload_url, file):
     }
     response = requests.post(upload_url, headers=headers, files=files)
     check_vk_response(response)
-    response_json = response.json()
-    server, photo, photo_hash = response_json['server'], response_json['photo'], response_json['hash']
+    photo_parameters = response.json()
+    server, photo, photo_hash = photo_parameters['server'], photo_parameters['photo'], photo_parameters['hash']
     return server, photo, photo_hash
 
 
@@ -70,9 +70,9 @@ def get_vk_saving_uploading_photo_parameters(
     }
     response = requests.post(f'{vk_url}/{method_name}', payload)
     check_vk_response(response)
-    response_json = response.json()
-    photo_owner_id = response_json['response'][0]['owner_id']
-    photo_id = response_json['response'][0]['id']
+    photo_parameters = response.json()
+    photo_owner_id = photo_parameters['response'][0]['owner_id']
+    photo_id = photo_parameters['response'][0]['id']
     return photo_owner_id, photo_id
 
 
