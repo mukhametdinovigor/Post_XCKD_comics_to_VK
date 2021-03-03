@@ -105,7 +105,7 @@ def download_random_comic():
     return comic_file_name, comic_title
 
 
-def upload_random_comic(comic_file_name, comic_title, vk_access_token, vk_group_id):
+def upload_comic(comic_file_name, comic_title, vk_access_token, vk_group_id):
     vk_url = 'https://api.vk.com/method/'
     upload_method_name = 'photos.getWallUploadServer'
     save_method_name = 'photos.saveWallPhoto'
@@ -128,7 +128,7 @@ def main():
         comic_file_name, comic_title = download_random_comic()
         vk_access_token = os.getenv('VK_ACCESS_TOKEN')
         vk_group_id = os.getenv('VK_GROUP_ID')
-        upload_random_comic(comic_file_name, comic_title, vk_access_token, vk_group_id)
+        upload_comic(comic_file_name, comic_title, vk_access_token, vk_group_id)
     finally:
         os.remove(comic_file_name)
 
