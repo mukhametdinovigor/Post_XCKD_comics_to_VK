@@ -33,11 +33,6 @@ Run script in command line:
 ```
 python3 main.py
 ```
-After successful posting you will get your post_id number in a console:
-
-```
-Your post_id - 15
-```
 
 ### Project Goals
 
