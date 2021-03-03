@@ -31,9 +31,9 @@ def download_image(image_url, filename):
         file.write(response.content)
 
 
-def check_vk_response(response):
-    if response.json().get("error"):
-        raise requests.HTTPError(f"error_code - {response.json()['error']['error_code']} {response.json()['error']['error_msg']}")
+def check_vk_response(decoded_response):
+    if decoded_response.get("error"):
+        raise requests.HTTPError(f"error_code - {decoded_response['error']['error_code']} {decoded_response['error']['error_msg']}")
 
 
 def get_vk_upload_url(vk_url, method_name, vk_access_token, vk_api_version):
@@ -42,8 +42,9 @@ def get_vk_upload_url(vk_url, method_name, vk_access_token, vk_api_version):
         'v': vk_api_version
     }
     response = requests.get(f'{vk_url}/{method_name}', payload)
-    check_vk_response(response)
-    vk_upload_url = response.json()['response']['upload_url']
+    decoded_response = response.json()
+    check_vk_response(decoded_response)
+    vk_upload_url = decoded_response['response']['upload_url']
     return vk_upload_url
 
 
@@ -56,8 +57,8 @@ def get_vk_uploading_photo_parameters(upload_url, filename):
             'photo': file
         }
         response = requests.post(upload_url, headers=headers, files=files)
-    check_vk_response(response)
     photo_parameters = response.json()
+    check_vk_response(photo_parameters)
     server, photo, photo_hash = photo_parameters['server'], photo_parameters['photo'], photo_parameters['hash']
     return server, photo, photo_hash
 
@@ -72,8 +73,8 @@ def get_vk_saving_uploading_photo_parameters(
         'v': vk_api_version
     }
     response = requests.post(f'{vk_url}/{method_name}', payload)
-    check_vk_response(response)
     photo_parameters = response.json()
+    check_vk_response(photo_parameters)
     photo_owner_id = photo_parameters['response'][0]['owner_id']
     photo_id = photo_parameters['response'][0]['id']
     return photo_owner_id, photo_id
@@ -89,8 +90,9 @@ def post_photo_vk_wall(vk_url, method_name, owner_id, from_group, attachments, m
         'v': vk_api_version
     }
     response = requests.post(f'{vk_url}/{method_name}', payload)
-    check_vk_response(response)
-    return f'Your post_id - {response.json()["response"]["post_id"]}'
+    decoded_response = response.json()
+    check_vk_response(decoded_response)
+    return f'Your post_id - {decoded_response["response"]["post_id"]}'
 
 
 def download_random_comic():
