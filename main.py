@@ -93,7 +93,7 @@ def post_photo_vk_wall(vk_url, method_name, owner_id, from_group, attachments, m
     return f'Your post_id - {response.json()["response"]["post_id"]}'
 
 
-def download_comic():
+def download_random_comic():
     last_comic_url = 'https://xkcd.com/info.0.json'
     random_comic_number = get_random_comic_number(last_comic_url)
     random_comic_url = f'https://xkcd.com/{random_comic_number}/info.0.json'
@@ -103,7 +103,7 @@ def download_comic():
     return comic_file_name, comic_title
 
 
-def upload_comic(comic_file_name, comic_title, vk_access_token, vk_group_id):
+def upload_random_comic(comic_file_name, comic_title, vk_access_token, vk_group_id):
     vk_url = 'https://api.vk.com/method/'
     upload_method_name = 'photos.getWallUploadServer'
     save_method_name = 'photos.saveWallPhoto'
@@ -123,10 +123,10 @@ def upload_comic(comic_file_name, comic_title, vk_access_token, vk_group_id):
 def main():
     dotenv.load_dotenv()
     try:
-        comic_file_name, comic_title = download_comic()
+        comic_file_name, comic_title = download_random_comic()
         vk_access_token = os.getenv('VK_ACCESS_TOKEN')
         vk_group_id = os.getenv('VK_GROUP_ID')
-        upload_comic(comic_file_name, comic_title, vk_access_token, vk_group_id)
+        upload_random_comic(comic_file_name, comic_title, vk_access_token, vk_group_id)
     finally:
         os.remove(comic_file_name)
 
